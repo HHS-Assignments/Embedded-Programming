@@ -91,7 +91,11 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  int oudeToestandKnop;
+  int tellerKnop = 0;  // Counter for button presses
+  GPIO_PinState value;
+  value = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+  oudeToestandKnop = value;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -99,10 +103,22 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  if (!HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)){
-	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-	  }
-	  HAL_Delay(500);  // 500ms delay
+    GPIO_PinState value;
+    value = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+
+    if(value != oudeToestandKnop) {  // State changed
+      if(value == GPIO_PIN_RESET) {  // Button pressed
+        tellerKnop++;  // Increment counter
+
+        if(tellerKnop >= 3) {  // After 3 presses
+          HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+          tellerKnop = 0;  // Reset counter
+        }
+      }
+      oudeToestandKnop = value;
+    }
+
+    HAL_Delay(50);  // Debounce
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
