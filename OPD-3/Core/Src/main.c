@@ -98,14 +98,18 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+	  // Test Code
+	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+	  HAL_Delay(500);
+	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+	  HAL_Delay(500);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
 }
 
 /**
-  * @brief System Clock Configuration
+  * @brief System Clock Configuration-
   * @retval None
   */
 void SystemClock_Config(void)
