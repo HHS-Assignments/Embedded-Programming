@@ -31,7 +31,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define TRUE 1
+#define FALSE 0
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -98,10 +99,10 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  // Test Code
-	  GPIO_PinState value;
-	  value = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
-	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, value);
+	  if (!HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)){
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+	  }
+	  HAL_Delay(500);  // 500ms delay
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
