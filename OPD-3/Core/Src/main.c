@@ -92,9 +92,9 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   int oudeToestandKnop;
-  int tellerKnop = 0;  // Counter for button presses
+  int tellerKnop = 0;
   GPIO_PinState value;
-  value = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+  value = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_10);
   oudeToestandKnop = value;
   /* USER CODE END 2 */
 
@@ -102,30 +102,30 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
+    /* USER CODE END WHEEL */
     GPIO_PinState value;
-    value = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+    value = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_10);
 
-    if(value != oudeToestandKnop) {  // State changed
-      if(value == GPIO_PIN_RESET) {  // Button pressed
-        tellerKnop++;  // Increment counter
+    if(value != oudeToestandKnop) {
+      if(value == GPIO_PIN_RESET) {  // Switch closed (to GND)
+        tellerKnop++;
 
-        if(tellerKnop >= 3) {  // After 3 presses
+        if(tellerKnop >= 3) {
           HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-          tellerKnop = 0;  // Reset counter
+          tellerKnop = 0;
         }
       }
       oudeToestandKnop = value;
     }
 
-    HAL_Delay(50);  // Debounce
+    HAL_Delay(50);  // Debounce delay
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
 }
 
 /**
-  * @brief System Clock Configuration-
+  * @brief System Clock Configuration
   * @retval None
   */
 void SystemClock_Config(void)
@@ -238,6 +238,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PA10 */
+  GPIO_InitStruct.Pin = GPIO_PIN_10;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
