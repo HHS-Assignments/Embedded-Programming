@@ -99,10 +99,9 @@ int main(void)
   {
     /* USER CODE END WHILE */
 	  // Test Code
-	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
-	  HAL_Delay(500);
-	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
-	  HAL_Delay(500);
+	  GPIO_PinState value;
+	  value = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, value);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
