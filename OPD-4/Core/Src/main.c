@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <string.h>
+#include <stdlib.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -87,35 +88,59 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  
-  
+  MX_GPIO_Init();
+  MX_USART2_UART_Init();
+
+  /* USER CODE BEGIN 2 */
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  MX_GPIO_Init();
-	  MX_USART2_UART_Init();
-	    /* USER CODE BEGIN 2 */
-	    char* text = "\rDe cijfers van 0 t/m 9 \n\r";
-	    HAL_UART_Transmit(&huart2, (uint8_t*)text, strlen(text), HAL_MAX_DELAY);
+    const char *prompt = "\r\nVoer een waarde in: ";
+    const char *resultPrefix = "\r\nAantal knippers: ";
+    const char *newline = "\r\n";
+    char inputBuffer[12];
+    uint8_t rxChar = 0;
+    uint8_t index = 0;
+    int blinkCount = 0;
 
-	    char buffer[50];
+    HAL_UART_Transmit(&huart2, (uint8_t *)prompt, strlen(prompt), HAL_MAX_DELAY);
 
-	    // Print digits 0 to 9
-	    for(int i = 0; i <= 78; i++)
-	    {
-	      buffer[0] = '0' + i;
-	      buffer[1] = ' ';
-	      HAL_UART_Transmit(&huart2, (uint8_t*)buffer, 2, HAL_MAX_DELAY);
-	    }
-	    char* eof = "\n \r---\n";
-	    HAL_UART_Transmit(&huart2, (uint8_t*)eof, strlen(eof), HAL_MAX_DELAY);
-	    // Print the text "De cijfers van 0 t/m 9 "
-	    
-	    // Wait 1 second before repeating
-	    HAL_Delay(4000);
+    while (1)
+    {
+      if (HAL_UART_Receive(&huart2, &rxChar, 1, HAL_MAX_DELAY) == HAL_OK)
+      {
+        if ((rxChar == '\r') || (rxChar == '\n'))
+        {
+          HAL_UART_Transmit(&huart2, (uint8_t *)newline, strlen(newline), HAL_MAX_DELAY);
+          break;
+        }
+
+        if ((rxChar >= '0') && (rxChar <= '9') && (index < (sizeof(inputBuffer) - 1)))
+        {
+          inputBuffer[index++] = (char)rxChar;
+          HAL_UART_Transmit(&huart2, &rxChar, 1, HAL_MAX_DELAY);
+        }
+      }
+    }
+
+    inputBuffer[index] = '\0';
+    blinkCount = atoi(inputBuffer);
+
+    HAL_UART_Transmit(&huart2, (uint8_t *)resultPrefix, strlen(resultPrefix), HAL_MAX_DELAY);
+    HAL_UART_Transmit(&huart2, (uint8_t *)inputBuffer, strlen(inputBuffer), HAL_MAX_DELAY);
+    HAL_UART_Transmit(&huart2, (uint8_t *)newline, strlen(newline), HAL_MAX_DELAY);
+
+    for (int i = 0; i < blinkCount; i++)
+    {
+      HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+      HAL_Delay(200);
+      HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+      HAL_Delay(200);
+    }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
