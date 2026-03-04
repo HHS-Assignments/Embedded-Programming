@@ -104,10 +104,10 @@ int main(void)
 	    char buffer[50];
 
 	    // Print digits 0 to 9
-	    for(int i = 0; i <= 9; i++)
+	    for(int i = 0; i <= 78; i++)
 	    {
 	      buffer[0] = '0' + i;
-	      buffer[1] = ', ';
+	      buffer[1] = ' ';
 	      HAL_UART_Transmit(&huart2, (uint8_t*)buffer, 2, HAL_MAX_DELAY);
 	    }
 	    char* eof = "\n \r---\n";
