@@ -1,0 +1,6 @@
+customInstructionsWorkspaceEnabled=true
+eclipse.preferences.version=1
+enableNextEditSuggestion=true
+mcpToolsModeStatus={"agent-mode"\:{"Built-in Tools"\:{"replace_string_in_file"\:true,"create_file"\:true,"list_dir"\:true,"file_search"\:true,"grep_search"\:true,"validate_cves"\:true,"insert_edit_into_file"\:true,"manage_todo_list"\:true,"get_errors"\:true,"read_file"\:true}}}
+mcpToolsStatus={"Built-in Tools"\:{"replace_string_in_file"\:true,"create_file"\:true,"list_dir"\:true,"file_search"\:true,"grep_search"\:true,"validate_cves"\:true,"insert_edit_into_file"\:true,"manage_todo_list"\:true,"get_errors"\:true,"read_file"\:true}}
+workspaceContextEnabled=true

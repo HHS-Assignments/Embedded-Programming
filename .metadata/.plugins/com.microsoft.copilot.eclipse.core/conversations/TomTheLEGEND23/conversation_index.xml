@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><user username="TomTheLEGEND23">
     <conversations>
         <conversation conversationId="0629ba72-6bb9-4270-afb5-9406699fd3cb" creationDate="2026-03-11T10:20:03.225194842Z" lastMessageDate="2026-03-11T10:56:32.882157453Z" title="ADC Value Reading and UART Transmission"/>
+        <conversation conversationId="82ecdfca-183c-4ba5-a085-5140d7a33b65" creationDate="2026-03-18T10:06:01.240900597Z" lastMessageDate="2026-03-18T10:07:59.794046155Z" title="Using Built-in LED with Potentiometer"/>
+        <conversation conversationId="bba917c6-d7c9-4da3-a745-f0bf827fef07" creationDate="2026-03-18T10:10:55.359204688Z" lastMessageDate="2026-03-18T10:10:58.381323862Z" title="5.3 De LED, potentiometer en de LDR. De weerstands..."/>
     </conversations>
 </user>

@@ -14,6 +14,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define POT_ADC_CHANNEL ADC_CHANNEL_9
+#define LDR_ADC_CHANNEL ADC_CHANNEL_11
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -38,8 +40,29 @@ static void MX_ADC1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-static uint32_t Read_ADC1_Value(void)
+static uint32_t Read_ADC1_Channel(uint32_t channel)
 {
+  ADC_ChannelConfTypeDef sConfig = {0};
+
+  sConfig.Channel = channel;
+  sConfig.Rank = ADC_REGULAR_RANK_1;
+  sConfig.SingleDiff = ADC_SINGLE_ENDED;
+  if (channel == LDR_ADC_CHANNEL)
+  {
+    sConfig.SamplingTime = ADC_SAMPLETIME_601CYCLES_5;
+  }
+  else
+  {
+    sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
+  }
+  sConfig.OffsetNumber = ADC_OFFSET_NONE;
+  sConfig.Offset = 0;
+
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
   HAL_ADC_Start(&hadc1);
   HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
   uint32_t value = HAL_ADC_GetValue(&hadc1);
@@ -65,7 +88,8 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  uint32_t waarde = 0;
+  uint32_t potWaarde = 0;
+  uint32_t ldrWaarde = 0;
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -79,16 +103,32 @@ int main(void)
   MX_USART2_UART_Init();
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
-  char txBuffer[32];
+  char txBuffer[80];
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    waarde = Read_ADC1_Value();
+    const char *ledState = "OFF";
+    potWaarde = Read_ADC1_Channel(POT_ADC_CHANNEL);
+    ldrWaarde = Read_ADC1_Channel(LDR_ADC_CHANNEL);
 
-    int len = snprintf(txBuffer, sizeof(txBuffer), "ADC1_IN9: %lu\r\n", waarde);
+    if (ldrWaarde > potWaarde)
+    {
+      HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+      ledState = "ON";
+    }
+    else
+    {
+      HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+    }
+
+    uint32_t potPercent = (potWaarde * 100U) / 4095U;
+    uint32_t ldrPercent = (ldrWaarde * 100U) / 4095U;
+    int len = snprintf(txBuffer, sizeof(txBuffer),
+                       "POT:%4lu (%3lu%%) | LDR:%4lu (%3lu%%) | LED:%s\r\n",
+                       potWaarde, potPercent, ldrWaarde, ldrPercent, ledState);
     HAL_UART_Transmit(&huart2, (uint8_t*)txBuffer, len, HAL_MAX_DELAY);
 
     HAL_Delay(200);
