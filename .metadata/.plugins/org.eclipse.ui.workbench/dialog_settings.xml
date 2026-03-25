@@ -7,4 +7,13 @@
 		<item key="DIALOG_HEIGHT" value="1004"/>
 		<item key="DIALOG_FONT_NAME" value="1|Monocraft|10.0|0|GTK|1|"/>
 	</section>
+	<section name="NewImportWizardAction">
+		<section name="STM32ProjectCreationImportWizard.dialogBounds">
+			<item key="DIALOG_X_ORIGIN" value="566"/>
+			<item key="DIALOG_Y_ORIGIN" value="278"/>
+			<item key="DIALOG_WIDTH" value="788"/>
+			<item key="DIALOG_HEIGHT" value="436"/>
+			<item key="DIALOG_FONT_NAME" value="1|Monocraft|10.0|0|GTK|1|"/>
+		</section>
+	</section>
 </section>

@@ -3,4 +3,20 @@
 	<section name="ExternalProjectImportWizard">
 		<item key="WizardProjectsImportPage.STORE_NESTED_PROJECTS" value="true"/>
 	</section>
+	<section name="SmartImportWizard">
+		<item key="SmartImportRootWizardPage.STORE_HIDE_ALREADY_OPEN" value="false"/>
+		<item key="SmartImportRootWizardPage.STORE_CLOSE_IMPORTED" value="false"/>
+		<item key="SmartImportRootWizardPage.STORE_NESTED_PROJECTS" value="true"/>
+		<item key="SmartImportRootWizardPage.STORE_CONFIGURE_NATURES" value="true"/>
+		<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
+			<item value="/home/tom/Git/Embedded-Programming"/>
+		</list>
+		<section name="STSmartImportWizard.dialogBounds">
+			<item key="DIALOG_X_ORIGIN" value="566"/>
+			<item key="DIALOG_Y_ORIGIN" value="278"/>
+			<item key="DIALOG_WIDTH" value="970"/>
+			<item key="DIALOG_HEIGHT" value="631"/>
+			<item key="DIALOG_FONT_NAME" value="1|Monocraft|10.0|0|GTK|1|"/>
+		</section>
+	</section>
 </section>

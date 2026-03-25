@@ -3,5 +3,7 @@
         <conversation conversationId="0629ba72-6bb9-4270-afb5-9406699fd3cb" creationDate="2026-03-11T10:20:03.225194842Z" lastMessageDate="2026-03-11T10:56:32.882157453Z" title="ADC Value Reading and UART Transmission"/>
         <conversation conversationId="82ecdfca-183c-4ba5-a085-5140d7a33b65" creationDate="2026-03-18T10:06:01.240900597Z" lastMessageDate="2026-03-18T10:07:59.794046155Z" title="Using Built-in LED with Potentiometer"/>
         <conversation conversationId="bba917c6-d7c9-4da3-a745-f0bf827fef07" creationDate="2026-03-18T10:10:55.359204688Z" lastMessageDate="2026-03-18T10:10:58.381323862Z" title="5.3 De LED, potentiometer en de LDR. De weerstands..."/>
+        <conversation conversationId="1ccdf524-6ccf-4876-bb36-896ec33b9a69" creationDate="2026-03-25T09:54:27.571207330Z" lastMessageDate="2026-03-25T09:54:46.947055772Z" title="STM32 GPIO Configuration and Interrupt Setup"/>
+        <conversation conversationId="c6edc026-7d3d-4a59-b9fc-5e90f7a53077" creationDate="2026-03-25T09:58:11.971440869Z" lastMessageDate="2026-03-25T10:02:15.990180399Z" title="Configuring GPIO Pins and Interrupts"/>
     </conversations>
 </user>
