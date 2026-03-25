@@ -22,6 +22,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,6 +49,10 @@ UART_HandleTypeDef huart2;
 
 int wachttijd = 1000;
 volatile uint8_t schakelaar_event = 0;
+volatile uint8_t wachttijd_uart_event = 0;
+uint8_t rx_char;
+char inlees[20] = {0};
+uint8_t inlees_index = 0;
 
 /* USER CODE END PV */
 
@@ -96,6 +103,11 @@ int main(void)
 
   uint8_t tekst1[] = {"\n\r opgave 6\n\r"};
   HAL_UART_Transmit(&huart2, tekst1, sizeof(tekst1), HAL_MAX_DELAY);
+  {
+    uint8_t tekst2[] = {"Typ een wachttijd in ms en druk Enter (>=100)\n\r"};
+    HAL_UART_Transmit(&huart2, tekst2, sizeof(tekst2), HAL_MAX_DELAY);
+  }
+  HAL_UART_Receive_IT(&huart2, &rx_char, 1);
 
   /* USER CODE END 2 */
 
@@ -114,6 +126,19 @@ int main(void)
     if (wachttijd < 100)
     {
       wachttijd = 1000;
+    }
+
+    if (wachttijd_uart_event)
+    {
+      char melding[64];
+      int len;
+
+      wachttijd_uart_event = 0;
+      len = snprintf(melding, sizeof(melding), "Nieuwe wachttijd: %d ms\n\r", wachttijd);
+      if (len > 0)
+      {
+        HAL_UART_Transmit(&huart2, (uint8_t *)melding, (uint16_t)len, HAL_MAX_DELAY);
+      }
     }
 
     /* USER CODE END WHILE */
@@ -185,7 +210,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 38400;
+  huart2.Init.BaudRate = 115200;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
@@ -199,6 +224,9 @@ static void MX_USART2_UART_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN USART2_Init 2 */
+
+  HAL_NVIC_SetPriority(USART2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(USART2_IRQn);
 
   /* USER CODE END USART2_Init 2 */
 
@@ -277,6 +305,38 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   else
   {
     __NOP();
+  }
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  if (huart->Instance == USART2)
+  {
+    if ((rx_char == '\r') || (rx_char == '\n'))
+    {
+      if (inlees_index > 0)
+      {
+        int nieuw_getal;
+
+        inlees[inlees_index] = '\0';
+        nieuw_getal = atoi(inlees);
+        if (nieuw_getal >= 100)
+        {
+          wachttijd = nieuw_getal;
+          wachttijd_uart_event = 1;
+        }
+        inlees_index = 0;
+      }
+    }
+    else if ((rx_char >= '0') && (rx_char <= '9'))
+    {
+      if (inlees_index < (sizeof(inlees) - 1))
+      {
+        inlees[inlees_index++] = (char)rx_char;
+      }
+    }
+
+    HAL_UART_Receive_IT(&huart2, &rx_char, 1);
   }
 }
 
