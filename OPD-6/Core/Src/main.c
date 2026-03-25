@@ -45,6 +45,7 @@ UART_HandleTypeDef huart2;
 /* USER CODE BEGIN PV */
 
 int wachttijd = 1000;
+volatile uint8_t schakelaar_event = 0;
 
 /* USER CODE END PV */
 
@@ -100,16 +101,14 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  GPIO_PinState niet_ingedrukt;
-
   while (1)
   {
     HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
     HAL_Delay(wachttijd);
 
-    niet_ingedrukt = HAL_GPIO_ReadPin(Schakelaar_GPIO_Port, Schakelaar_Pin);
-    if (!niet_ingedrukt)
+    if (schakelaar_event)
     {
+      schakelaar_event = 0;
       wachttijd -= 100;
     }
     if (wachttijd < 100)
@@ -251,14 +250,18 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : Schakelaar_Pin */
   GPIO_InitStruct.Pin = Schakelaar_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(Schakelaar_GPIO_Port, &GPIO_InitStruct);
 
-  /* USER CODE BEGIN MX_GPIO_Init_2 */
-
+  /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+
+  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
   /* USER CODE END MX_GPIO_Init_2 */
 }
@@ -267,9 +270,9 @@ static void MX_GPIO_Init(void)
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-  if (GPIO_Pin == B1_Pin)
+  if (GPIO_Pin == Schakelaar_Pin)
   {
-    HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+    schakelaar_event = 1;
   }
   else
   {
