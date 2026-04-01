@@ -1,0 +1,17 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build OPD-7 (Debug)",
+			"type": "shell",
+			"command": "make",
+			"args": [
+				"-C",
+				"OPD-7/Debug",
+				"all"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		}
+	]
+}

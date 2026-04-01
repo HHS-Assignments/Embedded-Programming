@@ -106,9 +106,7 @@ int main(void)
   int aantalc;
   aantalc=sprintf(outpbuf,"De knipper LED\r\n");
   HAL_UART_Transmit(&huart2, (uint8_t*)outpbuf, aantalc, HAL_MAX_DELAY);
-  HAL_TIM_OC_Start(&htim3,TIM_CHANNEL_2);
   HAL_TIM_Base_Start(&htim3);
-  HAL_TIM_OC_Start(&htim3, TIM_CHANNEL_1);
 
 
   speelNoot(NOTE_G, TIJDSDUUR1);
@@ -126,6 +124,9 @@ int main(void)
   speelNoot(NOTE_F, TIJDSDUUR1);
   HAL_Delay(TIJDSDUUR2);
   speelNoot(NOTE_D, 4 * TIJDSDUUR1);
+
+  HAL_TIM_OC_Stop(&htim3, TIM_CHANNEL_2);
+  HAL_TIM_Base_Stop(&htim3);
 
 
   /* USER CODE END 2 */
@@ -212,7 +213,7 @@ static void MX_TIM3_Init(void)
   htim3.Instance = TIM3;
   htim3.Init.Prescaler = 7200-1;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 5000-1;
+  htim3.Init.Period = 65535;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
@@ -238,11 +239,6 @@ static void MX_TIM3_Init(void)
   sConfigOC.Pulse = 0;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-  if (HAL_TIM_OC_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  __HAL_TIM_ENABLE_OCxPRELOAD(&htim3, TIM_CHANNEL_1);
   if (HAL_TIM_OC_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
   {
     Error_Handler();
@@ -309,34 +305,30 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(Green_Led_GPIO_Port, Green_Led_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(Max23069031_GPIO_Port, Max23069031_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : LD2_Pin */
-  GPIO_InitStruct.Pin = LD2_Pin;
+  /*Configure GPIO pin : Green_Led_Pin */
+  GPIO_InitStruct.Pin = Green_Led_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(Green_Led_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : Max23069031_Pin */
-  GPIO_InitStruct.Pin = Max23069031_Pin;
+  /*Configure GPIO pin : LED_Pin */
+  GPIO_InitStruct.Pin = LED_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(Max23069031_GPIO_Port, &GPIO_InitStruct);
-
-  /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+  HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
@@ -361,12 +353,12 @@ void speelNoot(double noot, int duur)
     uint32_t arr = (uint32_t)((KLOK_FREQ / (2.0 * PRESCALER * noot)) - 1);
 
     __HAL_TIM_SET_AUTORELOAD(&htim3, arr);
-    __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, arr);
+  __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, arr);
     __HAL_TIM_SET_COUNTER(&htim3, 0);
 
-    HAL_TIM_OC_Start(&htim3, TIM_CHANNEL_1);   // toon aan
+  HAL_TIM_OC_Start(&htim3, TIM_CHANNEL_2);   // toon aan
     HAL_Delay(duur);
-    HAL_TIM_OC_Stop(&htim3, TIM_CHANNEL_1);    // toon uit
+  HAL_TIM_OC_Stop(&htim3, TIM_CHANNEL_2);    // toon uit
 }
 /* USER CODE END 4 */
 

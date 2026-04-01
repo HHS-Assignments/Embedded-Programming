@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<item key="hasShownOverlayPopupBefore" value="true"/>
-	<item key="replaceBarOpen" value="false"/>
+	<item key="replaceBarOpen" value="true"/>
 	<list key="searchhistory">
+		<item value="Led24131857"/>
 		<item value="D2"/>
 		<item value="/* USER CODE BEGIN 2 */"/>
+	</list>
+	<list key="replacehistory">
+		<item value="led"/>
 	</list>
 </section>
